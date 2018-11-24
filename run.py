@@ -1,16 +1,12 @@
-#import math, urllib
+from webdriver import selenium
 from login import o_user, o_pass, o_url
 
-print(o_user)
-print(o_pass)
-print(o_url)
+driver = webdriver.Firefox
+driver.get(o_url)
+#Find element of login name and send credentials to element
+userid = driver.find_element_by_id(page_user_id)
+userid.send_keys(o_user)
 
-"""
-cj = cookielib.CookieJar()
-opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-login_data = urllib.urlencode({'j_username' : username, 'j_password' : password})
-opener.open('http://orders.coppercanyonfarms.com/muir/Login.aspx', login_data)
-resp = opener.open('https://website.com/hiddenpage')
-
-print resp.read()
-"""
+#Find element of password and send credentials to find_element_by_id
+psw = driver.find_element_by_id('ctl00_CPH3_txtvipass')
+psw.send_keys(o_pass)
