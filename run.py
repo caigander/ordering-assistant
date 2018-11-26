@@ -1,16 +1,15 @@
 
-import csv
 import time
+import os
 import requests
-from lxml import html
-#import pandas as pd
+import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from login import o_user, o_pass, o_url, m_url, page_user_id, page_pass_id, page_butn_id, webdriver_path
-
 
 browser = webdriver.Chrome(webdriver_path)
 browser.get(o_url)
@@ -27,7 +26,15 @@ psw.send_keys(o_pass)
 button = browser.find_element_by_id(page_butn_id)
 button.click()
 
-browser.get(m_url)
-html_source = browser.page_source
+time.sleep(3)
+# Pulls html down as variable
+page = browser.page_source
 
-print(html_source)
+# Returns list of all tables on page
+tables = pd.read_html(page)
+
+# Selects table of produce
+items = tables[5]
+#items.drop([1,2,3,5], 1, inplace = True)
+
+items.to_csv("muir.csv", sep='\t', index = False)
