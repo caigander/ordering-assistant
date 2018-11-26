@@ -1,3 +1,5 @@
+import re
+import csv
 import time
 import pandas as pd
 from selenium import webdriver
@@ -8,8 +10,14 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from login import m_user, z_user, m_pass, z_pass, m_url, z_url, page_user_id, page_pass_id, page_butn_id, webdriver_path
 
+categories = []
 chrome_options = Options()
 chrome_options.add_argument("--headless")
+
+def cleanlist():
+    with open('cat.dat', 'r') as f:
+        categories = f.readlines()
+    categories = list(map(lambda s: s.strip(), categories))
 
 def get_muir():
     browser = webdriver.Chrome(webdriver_path, options=chrome_options)
@@ -38,13 +46,7 @@ def get_muir():
     #Add new column to dataframe
     #muir_items[6] = ''
     muir_items.to_csv('dataframes/muir.csv', sep='\t', index = False)
-    browser.close()
-
-
-    #items.drop([1,2,3,5], 1, inplace = True)
-    #items.to_csv("muir.csv", sep='\t', index = False)
-    #item_list = items[0].tolist()
-
+    browser.quit()
 
 def get_az():
     browser = webdriver.Chrome(webdriver_path, options=chrome_options)
@@ -69,14 +71,20 @@ def get_az():
     az_items = az_tables[5]
 
     az_items.to_csv('dataframes/az.csv', sep='\t', index = False)
-    browser.close()
+    browser.quit()
 
-def read_in_dataframe():
+def cleanup_dataframe():
     muir = pd.read_csv('dataframes/muir.csv', sep='\t')
     az = pd.read_csv('dataframes/az.csv', sep='\t')
-    print(az)
-    print(muir)
+
+    muir.drop(['2','3','5'], axis = 1, inplace = True)
+    muir.drop(0, inplace = True)
+    m_items = muir.values.tolist()
 
 #get_muir()
 #get_az()
-read_in_dataframe()
+#cleanup_dataframe()
+cleanlist()
+cleanlist()
+cleanlist()
+cleanlist()
