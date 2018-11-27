@@ -13,12 +13,16 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 
 #Initialize global variables
+az_full_list = []
 az_produce_list = []
 az_description_list = []
 az_price_list = []
+
+muir_full_list = []
 muir_produce_list = []
 muir_description_list = []
 muir_price_list = []
+
 categories = []
 
 #Import categories from file
@@ -26,8 +30,9 @@ with open('cat.dat', 'r') as f:
     categories = f.readlines()
 categories = list(map(lambda s: s.strip(), categories))
 
-
+#Selenium broweser fetches Muir produce list and saves dataframe in csv
 def get_muir():
+    #Initialize broswer and get login page
     browser = webdriver.Chrome(webdriver_path, options=chrome_options)
     browser.get(m_url)
 
@@ -43,6 +48,7 @@ def get_muir():
     button = browser.find_element_by_id(page_butn_id)
     button.click()
 
+    #Without sleep the page source is not fetched properly
     time.sleep(1)
 
     # Load page source and return list of all tables on page
@@ -52,7 +58,6 @@ def get_muir():
     muir_items = muir_tables[5]
 
     #Add new column to dataframe
-    #muir_items[6] = ''
     muir_items.to_csv('dataframes/muir.csv', sep='\t', index = False)
     browser.quit()
 
@@ -116,8 +121,7 @@ def main():
     #get_muir()
     #get_az()
     #remove_columns_dataframe()
-    #print(categories)
-    df_to_list()
+    #df_to_list()
     print(az_produce_list)
     print(muir_produce_list)
     print(az_description_list)
