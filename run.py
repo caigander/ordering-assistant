@@ -57,32 +57,42 @@ def get_muir():
     # Selects table of produce
     muir_items = muir_tables[5]
 
-    #Add new column to dataframe
+    #Save dataframe to csv and quit browser, could speed up with browser.close
     muir_items.to_csv('dataframes/muir.csv', sep='\t', index = False)
     browser.quit()
 
+#Selenium broweser fetches A & Z produce list and saves dataframe in csv
 def get_az():
+    #Initialize broswer and get login page
     browser = webdriver.Chrome(webdriver_path, options=chrome_options)
     browser.get(z_url)
 
+    #Find element of login name and send credentials to element
     userid = browser.find_element_by_id(page_user_id)
     userid.send_keys(z_user)
 
+    #Find element of password and send credentials to find_element_by_id
     psw = browser.find_element_by_id(page_pass_id)
     psw.send_keys(z_pass)
 
+    #Find element of button and click it
     button = browser.find_element_by_id(page_butn_id)
     button.click()
 
+    #Without sleep the page source is not fetched properly
     time.sleep(1)
 
+    #Additional step specific to A&Z, select proper menu as default menu is not selected after login
     menu = browser.find_element_by_id('ctl00_CPH2_grdMenu_ctl03_lnkPicker')
     menu.click()
 
+    # Load page source and return list of all tables on page
     az_tables = pd.read_html(browser.page_source)
 
+    # Selects table of produce
     az_items = az_tables[5]
 
+    #Save dataframe to csv and quit browser, could speed up with browser.close
     az_items.to_csv('dataframes/az.csv', sep='\t', index = False)
     browser.quit()
 
@@ -98,7 +108,6 @@ def remove_columns_dataframe():
     az.to_csv('dataframes/az.csv', sep='\t', index = False)
 
 def df_to_list():
-
         muir = pd.read_csv('dataframes/muir.csv', sep='\t')
 
         muir_full_list = muir.values.tolist()
@@ -121,11 +130,13 @@ def main():
     #get_muir()
     #get_az()
     #remove_columns_dataframe()
-    #df_to_list()
+    df_to_list()
     print(az_produce_list)
     print(muir_produce_list)
     print(az_description_list)
     print(muir_description_list)
+    print(az_price_list)
+    print(muir_price_list)
 
 if __name__ == '__main__':
     main()
