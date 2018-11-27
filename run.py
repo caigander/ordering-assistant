@@ -1,3 +1,4 @@
+#!/Library/Frameworks/Python.framework/Versions/3.7/bin/python3
 import re, csv, time, pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -11,11 +12,20 @@ from login import m_user, z_user, m_pass, z_pass, m_url, z_url, page_user_id, pa
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 
-#Import categories from file
+#Initialize global variables
+az_produce_list = []
+az_description_list = []
+az_price_list = []
+muir_produce_list = []
+muir_description_list = []
+muir_price_list = []
 categories = []
+
+#Import categories from file
 with open('cat.dat', 'r') as f:
     categories = f.readlines()
 categories = list(map(lambda s: s.strip(), categories))
+
 
 def get_muir():
     browser = webdriver.Chrome(webdriver_path, options=chrome_options)
@@ -82,11 +92,36 @@ def remove_columns_dataframe():
     az.drop(0, inplace = True)
     az.to_csv('dataframes/az.csv', sep='\t', index = False)
 
+def df_to_list():
+
+        muir = pd.read_csv('dataframes/muir.csv', sep='\t')
+
+        muir_full_list = muir.values.tolist()
+
+        for item in muir_full_list:
+            muir_produce_list.append(item[0])
+            muir_description_list.append(item[1])
+            muir_price_list.append(item[2])
+
+        az = pd.read_csv('dataframes/az.csv', sep='\t')
+        az_full_list = az.values.tolist()
+
+        for item in az_full_list:
+            az_produce_list.append(item[0])
+            az_description_list.append(item[1])
+            az_price_list.append(item[2])
+
+
 def main():
     #get_muir()
     #get_az()
     #remove_columns_dataframe()
-
+    #print(categories)
+    df_to_list()
+    print(az_produce_list)
+    print(muir_produce_list)
+    print(az_description_list)
+    print(muir_description_list)
 
 if __name__ == '__main__':
     main()
